@@ -1,0 +1,14 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "echo \"Starting https://www.laycos-local.net:8080\" && http-server --cors --port 0 -a 0.0.0.0 -S -C cert.pem "
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "http-server": "^13.0.2"
+  }
+}
