@@ -143,6 +143,7 @@ class EmojiPicker {
       onChange,
       onEmoji,
       maxMatches,
+      showAllVariations = false,
     } = config || {};
 
     this.inputSel = inputSel;
@@ -150,6 +151,7 @@ class EmojiPicker {
     this.autoReplaceOnEnter = autoReplaceOnEnter;
     this.replaceOnPick = replaceOnPick;
     this.maxMatches = maxMatches;
+    this.showAllVariations = showAllVariations;
 
     this.onChange = onChange;
     this.onEmoji = onEmoji;
@@ -264,20 +266,21 @@ class EmojiPicker {
      }
 
     let matchesExpanded = [];
+
+    
     let emojiTratado = {};
     for(let i = 0; i < matches.length; i++) {
       const m = matches[i];
       if (emojiTratado[m.emoji]) { continue; }  
 
-      let title = this._titleForKey(m);   
-      if (emojiData[m].variations) {
+      let title = this._titleForKey(m);  
+      matchesExpanded.push({ emoji: this._emojiForKey(m), title, });
+
+      if (matches.length === 1 && !this.showAllVariations && emojiData[m].variations) {
         emojiData[m].variations.forEach( emoji => {
           if (emojiTratado[emoji]) { return; }
           matchesExpanded.push({ emoji, title, });
         });
-      }
-      else {
-        matchesExpanded.push({ emoji: this._emojiForKey(m), title, });
       }
 
       if (this.maxMatches && matchesExpanded.length >= this.maxMatches) {
