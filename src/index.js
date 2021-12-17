@@ -280,7 +280,10 @@ class EmojiPicker {
         matchesExpanded.push({ emoji: this._emojiForKey(m), title, });
       }
 
-      if (this.maxMatches && matchesExpanded.length >= this.maxMatches) { break; }
+      if (this.maxMatches && matchesExpanded.length >= this.maxMatches) {
+        matchesExpanded = matchesExpanded.slice(0, this.maxMatches);
+        break; 
+      }
     }
 
     this._matches = matchesExpanded;
