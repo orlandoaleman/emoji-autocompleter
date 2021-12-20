@@ -143,7 +143,7 @@ class EmojiPicker {
       onChange,
       onEmoji,
       maxMatches,
-      showAllVariations = false,
+      showVariations = true,
     } = config || {};
 
     this.inputSel = inputSel;
@@ -151,7 +151,7 @@ class EmojiPicker {
     this.autoReplaceOnEnter = autoReplaceOnEnter;
     this.replaceOnPick = replaceOnPick;
     this.maxMatches = maxMatches;
-    this.showAllVariations = showAllVariations;
+    this.showVariations = showVariations;
 
     this.onChange = onChange;
     this.onEmoji = onEmoji;
@@ -213,7 +213,26 @@ class EmojiPicker {
   _clearPicker() {
     this._picker.innerHTML = '';
   }
-  
+
+  _updatePicker(str) {
+    const picker = this._picker;
+    this._clearPicker() & this._matches.forEach(match => {
+      if (match.variations) {
+        picker.appendChild(this._createLink(str, match, this._showVariations.bind(this, str, match)));
+        return;
+      }
+      picker.appendChild(this._createLink(str, match, this._updateText.bind(this)));
+    });
+  }
+
+  _showVariations(str, match) {
+    const picker = this._picker;
+    this._clearPicker() & match.variations.forEach(variation => {
+      let customMatch = { ...match, emoji: variation };
+      picker.appendChild(this._createLink(str, customMatch, this._updateText.bind(this)));
+    });
+  }
+
   _updateText(word, emoji) {
     if (this.replaceOnPick) {
       const input = this._input;
@@ -228,21 +247,6 @@ class EmojiPicker {
     this._clearPicker();
     this.onChange && this.onChange({ str: '', matches: [] });
   }
-
-  _updatePicker(str) {
-    const picker = this._picker;
-    this._clearPicker() & this._matches.forEach(match => {
-      if (match.variations) {
-        match.variations.forEach(variation => {
-          let customMatch = { ...match, emoji: variation };
-          picker.appendChild(this._createLink(str, customMatch, this._updateText.bind(this)));
-        });
-        return;
-      }
-      picker.appendChild(this._createLink(str, match, this._updateText.bind(this)));
-    });
-  }
-
 
   _titleForKey(k) {
     return (emojiData[k] && emojiData[k][this.lang]) ? emojiData[k][this.lang] : k 
@@ -266,7 +270,6 @@ class EmojiPicker {
      }
 
     let matchesExpanded = [];
-
     
     let emojiTratado = {};
     for(let i = 0; i < matches.length; i++) {
@@ -274,19 +277,11 @@ class EmojiPicker {
       if (emojiTratado[m.emoji]) { continue; }  
 
       let title = this._titleForKey(m);  
-      matchesExpanded.push({ emoji: this._emojiForKey(m), title, });
-
-      if (matches.length === 1 && !this.showAllVariations && emojiData[m].variations) {
-        emojiData[m].variations.forEach( emoji => {
-          if (emojiTratado[emoji]) { return; }
-          matchesExpanded.push({ emoji, title, });
-        });
+      const info = { emoji: this._emojiForKey(m), title, };
+      if (this.showVariations && emojiData[m].variations) {
+        info.variations = emojiData[m].variations;
       }
-
-      if (this.maxMatches && matchesExpanded.length >= this.maxMatches) {
-        matchesExpanded = matchesExpanded.slice(0, this.maxMatches);
-        break; 
-      }
+      matchesExpanded.push(info);
     }
 
     this._matches = matchesExpanded;
