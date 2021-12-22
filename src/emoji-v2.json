@@ -1102,7 +1102,7 @@
     "prayer beads": { "c": "📿", "en": "Prayer beads", "es": "Rosario", "v": "1.0" },  
     "lipstick": { "c": "💄", "en": "Lipstick", "es": "Lápiz labial", "v": "1.0" },  
     "ring": { "c": "💍", "en": "Ring", "es": "Anillo", "v": "1.0" },  
-    "gem stone": { "c": "💎", "en": "Gem stone", "es": "Piedra preciosa", "v": "1.0" },  
+    "gem stone": { "c": "💎", "en": "Gem stone", "es": "Piedra preciosa (diamante, gema, ...)", "v": "1.0" },  
     "muted speaker": { "c": "🔇", "en": "Muted speaker", "es": "Altavoz silenciado", "v": "1.0" },  
     "speaker low volume": { "c": "🔈", "en": "Speaker low volume", "es": "Altavoz de bajo volumen", "v": "1.0" },  
     "speaker medium volume": { "c": "🔉", "en": "Speaker medium volume", "es": "Altavoz de volumen medio", "v": "1.0" },  
