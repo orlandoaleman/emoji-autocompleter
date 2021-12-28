@@ -348,4 +348,4 @@ class EmojiPicker {
 }
 
 
-export { EmojiPicker, configEmojiPicker, i18nKey, fetchEmojis };
+export { EmojiPicker, configEmojiPicker, i18nKey, fetchEmojis, emojiData };
