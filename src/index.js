@@ -127,7 +127,8 @@ var keyMap = {
 };
 
 
-function fetchEmojis({ lang = 'en' }) {
+function fetchEmojis(args = {}) {
+  const { lang = 'en' } = args;
   return fetchJSON(emojiDataPath)
     .then(data => {
       if (!data) { return; }      
@@ -152,7 +153,6 @@ function configEmojiPicker({ emojiDataPath: emojiDataPath_ }) {
 function i18nKey(k, lang) {
   return (emojiData[k] && emojiData[k][lang]) ? emojiData[k][lang] : k 
 }
-
 
 class EmojiPicker {
   constructor(config) {
