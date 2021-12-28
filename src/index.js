@@ -126,9 +126,33 @@ var keyMap = {
   'APOSTROPHE'   : 222
 };
 
+
+function fetchEmojis({ lang = 'en' }) {
+  return fetchJSON(emojiDataPath)
+    .then(data => {
+      if (!data) { return; }      
+      emojiData = data;
+      emojiKeys = Object.keys(data);
+
+      // Indexación para búsqueda
+      for (let i = 0; i < emojiKeys.length; i++) {
+        const key = emojiKeys[i];
+        let str = i18nKey(key, lang);
+        let searchText = str.normalize("NFD").replace(/[\p{Diacritic}\(\)\.,]/gu, "").toLowerCase();
+        emojiData[key].searchText = searchText;
+      }
+    })
+  .catch(err => console.error(err));
+}
+
 function configEmojiPicker({ emojiDataPath: emojiDataPath_ }) {
   emojiDataPath = emojiDataPath_;
 }
+
+function i18nKey(k, lang) {
+  return (emojiData[k] && emojiData[k][lang]) ? emojiData[k][lang] : k 
+}
+
 
 class EmojiPicker {
   constructor(config) {
@@ -179,26 +203,7 @@ class EmojiPicker {
   }
 
   loadEmojiData() {
-    fetchJSON(emojiDataPath)
-      .then(data => {
-        if (!data) { return; }      
-        emojiData = data;
-        emojiKeys = Object.keys(data);
-
-        // Indexación para búsqueda
-        for (let i = 0; i < emojiKeys.length; i++) {
-          const key = emojiKeys[i];
-          let str = this._titleForKey(key);
-          let searchText = str.normalize("NFD").replace(/[\p{Diacritic}\(\)\.,]/gu, "").toLowerCase();
-          emojiData[key].searchText = searchText;
-          // console.log( key, 'str', str, '====>', searchText);
-        }
-      })
-    .catch(err => console.error(err))
-  }
-
-  i18nKey(key) {
-    return this._titleForKey(key);
+    return fetchEmojis({ lang: this.lang });
   }
 
   _createLink(str, match, method) {
@@ -249,7 +254,7 @@ class EmojiPicker {
   }
 
   _titleForKey(k) {
-    return (emojiData[k] && emojiData[k][this.lang]) ? emojiData[k][this.lang] : k 
+    return i18nKey(k, this.lang);
   }
 
   _emojiForKey(k) {
@@ -342,4 +347,5 @@ class EmojiPicker {
   
 }
 
-export { EmojiPicker, configEmojiPicker };
+
+export { EmojiPicker, configEmojiPicker, i18nKey, fetchEmojis };
